@@ -16,7 +16,8 @@ if [ -n "${INPUT_PROPERTIES_FILE}" ]; then
   OPT_PROPERTIES_FILE="-p ${INPUT_PROPERTIES_FILE}"
 fi
 
-exec java "-Dbasedir=${INPUT_WORKDIR}" -jar /checkstyle.jar "${INPUT_WORKDIR}" -c "${INPUT_CHECKSTYLE_CONFIG}" ${OPT_PROPERTIES_FILE} -f xml \
+cd $INPUT_WORKDIR
+exec java "-Dbasedir=${`pwd`}" -jar /checkstyle.jar "${INPUT_WORKDIR}" -c "${INPUT_CHECKSTYLE_CONFIG}" ${OPT_PROPERTIES_FILE} -f xml \
  | reviewdog -f=checkstyle \
       -name="${INPUT_TOOL_NAME}" \
       -reporter="${INPUT_REPORTER:-github-pr-check}" \
