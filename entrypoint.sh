@@ -10,14 +10,18 @@ echo "INPUT_WORKDIR=${INPUT_WORKDIR}"
 echo "INPUT_CHECKSTYLE_CONFIG=${INPUT_CHECKSTYLE_CONFIG}"
 echo "INPUT_PROPERTIES_FILE=${INPUT_PROPERTIES_FILE}"
 
+cd $INPUT_WORKDIR
+
 export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
+export CHECKSTYLE_BASEDIR=`pwd`
+
+echo "CHECKSTYLE_BASEDIR=${CHECKSTYLE_BASEDIR}"
 
 if [ -n "${INPUT_PROPERTIES_FILE}" ]; then
   OPT_PROPERTIES_FILE="-p ${INPUT_PROPERTIES_FILE}"
 fi
 
-cd $INPUT_WORKDIR
-exec java "-Dbasedir=${`pwd`}" -jar /checkstyle.jar "${INPUT_WORKDIR}" -c "${INPUT_CHECKSTYLE_CONFIG}" ${OPT_PROPERTIES_FILE} -f xml \
+exec java "-Dbasedir=${CHECKSTYLE_BASEDIR}" -jar /checkstyle.jar "${INPUT_WORKDIR}" -c "${INPUT_CHECKSTYLE_CONFIG}" ${OPT_PROPERTIES_FILE} -f xml \
  | reviewdog -f=checkstyle \
       -name="${INPUT_TOOL_NAME}" \
       -reporter="${INPUT_REPORTER:-github-pr-check}" \
